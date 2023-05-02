@@ -193,7 +193,7 @@ with tab3:
 
         Source: pages/source/states.csv \n
 
-        Brief Explanation: I will be using the folium library to create a map and integrating the latitudes 
+        Brief Explanation: I'm using the folium library to create a map and integrating the latitudes 
         and longitudes provided in the source file with the polygon geometry of the geojson file found at 
         https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json.\n
 
@@ -203,6 +203,8 @@ with tab3:
 
 
     """)
+
     json_str = STATE_DATA.to_json()
 
+    st.caption("_states.csv_")
     st.json(json_str)

@@ -1,22 +1,23 @@
-# app/Dockerfile
-
-FROM python:3.9-slim
-
+# Build stage
+FROM python:3.9.6-slim-buster as builder
+RUN apt-get update && \
+    apt-get install -y build-essential && \
+    pip install --upgrade pip
 WORKDIR /app
+COPY requirements.txt .
+RUN pip install --user -r requirements.txt
+COPY . .
+ENV PATH="/root/.local/bin:${PATH}"
+RUN streamlit version
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
-    software-properties-common \
-    git \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN git clone https://github.com/streamlit/streamlit-example.git .
-
-RUN pip install -r requirements.txt
-
+# Production stage
+FROM python:3.9.6-slim-buster
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -fsSL https://code-server.dev/install.sh | sh
 EXPOSE 8501
-
-HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
-
-ENTRYPOINT ["streamlit", "run", "Home.py", "--server.port=8501", "--server.address=0.0.0.0"]
+COPY --from=builder /root/.local /root/.local
+COPY --from=builder /app /app
+ENV PATH="/root/.local/bin:${PATH}"
+WORKDIR /app
+CMD ["streamlit", "run", "--server.port", "8501", "--server.enableCORS", "false", "Home.py"]
