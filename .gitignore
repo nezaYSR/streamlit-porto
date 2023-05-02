@@ -1,0 +1,14 @@
+# Compiled Python files
+*.pyc
+
+# Python cache directories
+__pycache__/
+
+# Streamlit app data
+.streamlit/
+
+# Virtual environment
+.venv/
+
+# Dependency files
+requirements.txt
